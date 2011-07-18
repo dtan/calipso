@@ -6,3 +6,4 @@ node_modules/*
 *.sock
 *.gz
 themes/calipso/public/css/calipso.css
+db/
