@@ -1,0 +1,6 @@
+[submodule "themes/responsive/public/css/stackoverlay"]
+	path = themes/responsive/public/css/stackoverlay
+	url = https://github.com/camslice/StackLayout.git
+[submodule "themes/responsive/public/css/stacklayout"]
+	path = themes/responsive/public/css/stacklayout
+	url = https://github.com/camslice/StackLayout.git
