@@ -5,16 +5,16 @@
 module.exports = function(app,express) {
 
   // Database connection
-  app.set('db-uri', 'mongodb://localhost:' + app.dbPort + '/' + app.dbBaseName + '-dev');
+  app.set('db-uri', 'mongodb://localhost/calipso-dev');
 
   // Change to suit - this key works for calip.so
-  app.set('google-analytics-key', app.googleAnalyticsKey);
+  app.set('google-analytics-key', 'UA-17607570-4');
 
   // Disqus
-  app.set('disqus-shortname', app.disqusName);
+  app.set('disqus-shortname', 'calipsojs');
 
   // App config
-  app.set('server-url', 'http://localhost:' + app.port);
+  app.set('server-url', 'http://localhost:3000');
 
   // Language mode
   app.set('language-add', true);
@@ -22,4 +22,4 @@ module.exports = function(app,express) {
 
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 
-};
+}
