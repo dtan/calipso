@@ -8,13 +8,13 @@ module.exports = function(app,express) {
   app.set('db-uri', 'mongodb://localhost/calipso-prod');
 
   // Change to suit - this key works for calip.so
-  app.set('google-analytics-key', 'UA-17607570-4');
+  app.set('google-analytics-key', 'UA-17607570-#');
 
   // Disqus
-  app.set('disqus-shortname', 'calipsojs');
+  app.set('disqus-shortname', 'wtd-depot');
 
   // App config
-  app.set('server-url', 'http://calip.so');
+  app.set('server-url', 'http://depot.whatthedale.com');
 
 // Language mode
   app.set('language-add', false);
