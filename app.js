@@ -24,7 +24,7 @@ var fs = require('fs'),
 // Local App Variables
 var path = __dirname;
 var theme = 'default';
-var port = 3000; // usually only for non-production envs
+var port = 3200; // usually only for non-production envs
 var dbPort = 27017; // if you are running multiple mongodb instances
 var dbBaseName = 'calipso';
 var googleAnalyticsKey = 'UA-17607570-#';
