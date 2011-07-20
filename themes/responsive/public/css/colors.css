@@ -1,0 +1,9 @@
+a:link, a:visited { color: #222; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+a.current { color: #aaa; }
+
+.color-1 { }
+
+
+.bg-color-1 { background-color: #abc; }

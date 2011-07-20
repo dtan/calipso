@@ -1,0 +1,81 @@
+{
+  "name": "responsive",
+  "description": "Based on responsive web design principles",
+  "version": "0.0.1",
+  "author": "dale tan <wtdtan@gmail.com> (whatthedale.com)",
+  "layouts": {
+    "default": {
+      "layout": {
+        "template": "default.html",
+        "sections": {
+          "styles"  : { "template": "styles.html" },
+          "scripts" : { "template": "scripts.html" },
+          "admin"   : { "template": "admin-menu.html" },
+          "primary" : { "template": "primary-menu.html" },
+          "header"  : { "template": "header.html" },
+          "messages": { "template": "messages.html" },
+          "body"    : { "template": "body.html" },
+          "right"   : { "template": "right.html" },
+          "footer"  : { "template": "footer.html" }
+        },
+        "modules":{
+          "user":{
+            "login":"modules/user/login.html"
+          },
+          "elastic":{
+            "results":"modules/elastic/results.html"
+          }
+        }
+      }
+    },
+    "home": {
+      "layout": {
+        "copyFrom":"default",
+        "sections": {
+          "body": { "template": "body.html" }
+        }
+      }
+    },
+    "guideLanding": {
+      "layout": {
+        "copyFrom":"default",
+        "sections": {
+          "body": { "template": "body.html" }
+        }
+      }
+    },
+    "blogLanding": {
+      "layout": {
+        "copyFrom":"default",
+        "sections": {
+          "body": { "template": "body.html" }
+        }
+      }
+    },
+    "githubLanding": {
+      "layout": {
+        "copyFrom":"default",
+        "sections": {
+          "body": { "template": "body.html" }
+        }
+      }
+    },    
+    "quickstartLanding": {
+      "layout": {
+        "copyFrom":"default",
+        "sections": {
+          "body": { "template": "body.html" }
+        }
+      }
+    },
+    "preview": {
+      "layout": {
+        "template": "preview.html",
+        "sections": {
+          "scripts": { "template": "scripts.html" },
+          "body"   : { "template": "body.html" }
+        }
+      }
+    }
+  }
+}

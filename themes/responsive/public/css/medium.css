@@ -1,0 +1,29 @@
+/* ----------------------------------------------
+  LGA Style Sheet - 798px medium
+----------------------------------------------------------------- */
+.container { margin: 0 auto; width: 798px; }
+.stack1of2,
+.stack1of3,
+.stack2of3,
+.stack1of4,
+.stack3of4,
+.stack1of5,
+.stack2of5,
+.stack3of5,
+.stack4of5
+{
+
+}
+
+
+
+@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait) {  }
+
+@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape) {  }
+
+/* Portrait */
+@media only screen and (max-device-width: 480px) and (orientation:portrait) { }
+/* Landscape */
+@media only screen and (max-device-width: 480px) and (orientation:landscape) { }
+
+html { -webkit-text-size-adjust:none; -ms-text-size-adjust:none; }
