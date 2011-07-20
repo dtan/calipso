@@ -108,6 +108,7 @@ function bootApplication(app, next) {
   
   // Stylus
   var stylusMiddleware = stylus.middleware({
+    tag: 'themeStatic',
     src: __dirname + '/themes/' + theme + '/stylus', // .styl files are located in `views/stylesheets`
     dest: __dirname + '/themes/' + theme + '/public', // .styl resources are compiled `/stylesheets/*.css`
     debug: false,
