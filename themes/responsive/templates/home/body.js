@@ -12,7 +12,7 @@ exports = module.exports = function(req, options, callback) {
   calipso.lib.step(
 
   function getContent() {
-    options.getBlock("site/name", this.parallel());
+    options.getContent(req, "site-name", this.parallel());
     options.getContent(req, "welcome-text", this.parallel());
     options.getContent(req, "home-about-calipso", this.parallel());
     options.getContent(req, "home-quickstart", this.parallel());

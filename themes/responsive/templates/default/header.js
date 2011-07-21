@@ -11,10 +11,11 @@ exports = module.exports = function(req, options, callback) {
    */
   calipso.lib.step(
     function getContent() {
-      options.getBlock('search.form',this.parallel());
+      options.getContent(req,'site.name',this.parallel());
     },
-    function done(err,searchForm) {
-      callback(err,{searchForm:searchForm});
+    function done(err,siteName) {
+      console.log('siteName: ', siteName)
+      callback(err,{siteName:siteName});
     }
   );
 
