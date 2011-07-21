@@ -8,7 +8,6 @@
       "layout": {
         "template": "default.html",
         "sections": {
-          "tester"  : { "template": "testing.html" },
           "styles"  : { "template": "styles.html" },
           "scripts" : { "template": "scripts.html" },
           "admin"   : { "template": "adminMenu.html" },
@@ -17,7 +16,8 @@
           "messages": { "template": "messages.html" },
           "body"    : { "template": "body.html" },
           "right"   : { "template": "right.html" },
-          "footer"  : { "template": "footer.html" }
+          "footer"  : { "template": "footer.html" },
+          "searchform": { "template": "searchForm.html" }
         },
         "modules":{
           "user":{
