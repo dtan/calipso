@@ -15,7 +15,7 @@
 
 }
 
-
+.stack2of3 .stack1of3 { width: 50%; }
 
 @media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait) {  }
 
