@@ -1,3 +1,6 @@
+.showOverflow { 
+  overflow: visible;
+}
 /* display bug for some reason */
 .ui-datepicker { display: none; }
 .container { margin-top: 50px; }
