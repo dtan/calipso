@@ -1,9 +1,26 @@
+/* keep this block of styles for quick tests of overlapping
+.stack { background-color: #aaa; }
+.stackContent { background-color: transparent; }
+
+.stack1of2 { background-color: #abbaff; }
+.stack1of3 { background-color: #aaafff; }
+.stack2of3 { background-color: #addfff; }
+.stack1of4 { background-color: #aeffff; }
+.stack3of4 { background-color: #bfffff; }
+.stack1of5 { background-color: #bbffff; }
+.stack2of5 { background-color: #cbbfff; }
+.stack3of5 { background-color: #dbbbff; }
+.stack4of5 { background-color: #ebbbbf; }
+.stackAuto { background-color: #fbb; }
+*/
+
+/*.catfish { bottom: 0; height: 10%; left: 0; position: fixed; }*/
+
 .showOverflow { 
   overflow: visible;
 }
 /* display bug for some reason */
 .ui-datepicker { display: none; }
-.container { margin-top: 50px; }
 label { margin-right: 10px; }
 label.text-label { width: 100%; }
 
@@ -148,3 +165,84 @@ p { margin: 10px 0; }
   .body pre { }
 
 .bullets { }
+
+/* footer */
+#footer { margin: 20px 0; }
+
+/* search form */
+.searchForm input.text { display: inline-block; width: 70%; }
+.searchForm input.text + .actions { display: inline-block; margin-left: 5px; }
+
+/* form */
+.form-field { padding-bottom: 10px; }
+.form-field label { display: block; }
+.form-field label ~ select { display: inline; }
+.form-field input[type=checkbox] ~ label { display: inline; margin-left: 5px; }
+#submit { margin: 20px; }
+
+/* prettyprint.css override */
+.prettyprint { overflow-y: hidden; width: 100%; }
+
+/* admin panel */
+#adminToolbar, 
+#adminToolbar ul { float: none; position: relative; width: 100%; }
+#adminToolbar li.adminToolbar-menu-item,
+#adminToolbar li.adminToolbar-menu-item-selected { display: inline-block; }
+
+ul.tabs {
+  height: 32px;
+  border-bottom: 1px solid #999;
+  border-left: 1px solid #999;
+}
+ul.tabs li {
+  float: left;
+  height: 31px;
+  line-height: 31px;
+  border: 1px solid #999;
+  border-left: 0;
+  margin-bottom: -1px;
+  background: #e0e0e0;
+  overflow: hidden;
+  position: relative;
+}
+ul.tabs li a {
+  text-decoration: none;
+  color: #000;
+  display: block;
+  font-size: 1.2em;
+  padding: 0 20px;
+  border: 1px solid #fff;
+  outline: none;
+}
+ul.tabs li a:hover {
+  background: #ccc;
+}
+ul.tabs li.active,
+ul.tabs li.active a:hover {
+  background: #fff;
+  border-bottom: 1px solid #fff;
+}
+.tab-container {
+  border:1px solid #999;
+  border-top: none;
+  clear: both;
+}
+.tab-content {
+  padding: 20px 20px 10px;
+}
+.tab-content h2 {
+  font-weight: normal;
+  padding-bottom: 10px;
+  font-size: 1.8em;
+}
+.tab-content h3 a {
+  color: #254588;
+}
+.tab-content img {
+  float: left;
+  margin: 0 20px 20px 0;
+  padding: 5px;
+}
+
+
+
