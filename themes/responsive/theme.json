@@ -8,10 +8,11 @@
       "layout": {
         "template": "default.html",
         "sections": {
+          "tester"  : { "template": "testing.html" },
           "styles"  : { "template": "styles.html" },
           "scripts" : { "template": "scripts.html" },
-          "admin"   : { "template": "admin-menu.html" },
-          "primary" : { "template": "primary-menu.html" },
+          "admin"   : { "template": "adminMenu.html" },
+          "primary" : { "template": "primaryMenu.html" },
           "header"  : { "template": "header.html" },
           "messages": { "template": "messages.html" },
           "body"    : { "template": "body.html" },
