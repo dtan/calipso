@@ -12,14 +12,15 @@ exports = module.exports = function(req, options, callback) {
   calipso.lib.step(
 
   function getContent() {
+    options.getBlock("site/name", this.parallel());
     options.getContent(req, "welcome-text", this.parallel());
     options.getContent(req, "home-about-calipso", this.parallel());
     options.getContent(req, "home-quickstart", this.parallel());
     options.getContent(req, "home-guide", this.parallel());
-    options.getContent(req, "home-feature-a", this.parallel());
+    options.getContent(req, "posts/home-feature-a", this.parallel());
     options.getContent(req, "home-feature-b", this.parallel());
     options.getContent(req, "home-feature-c", this.parallel());
-  }, function done(err, welcome, about, quickstart, guide, fa, fb, fc) {
+  }, function done(err, sitename, welcome, about, quickstart, guide, fa, fb, fc) {
     callback(err,{
       welcome: welcome,
       about: about,
@@ -27,7 +28,8 @@ exports = module.exports = function(req, options, callback) {
       guide: guide,
       featurea: fa,
       featureb: fb,
-      featurec: fc
+      featurec: fc,
+      sitename: sitename
     });
   });
 
