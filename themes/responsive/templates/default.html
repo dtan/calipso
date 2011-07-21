@@ -6,52 +6,54 @@
 <!--[if IE 8 ]>    <html class="no-js ie8" lang="en"> <![endif]-->
 <!--[if (gte IE 9)|!(IE)]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <meta name="description" content="Calipso is a NodeJS Content Management System (CMS) based on Express and Mongoose.  Fast, asynchronous, dynamic and social.">
-    <meta name="author" content="">
-    <meta name="keywords" content="calipso nodejs cms content management system asynchronous express mongoose dynamic social">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="description" content="Calipso is a NodeJS Content Management System (CMS) based on Express and Mongoose.  Fast, asynchronous, dynamic and social." />
+    <meta name="author" content="" />
+    <meta name="keywords" content="calipso nodejs cms content management system asynchronous express mongoose dynamic social" />
     <title>Calipso - A NodeJS CMS</title>
     <%- styles %>    
   </head>
   <body>
-    <% if(user.isAdmin) { %>
-      <div id="adminMenu" class="stack showOverflow">
+    <div id="page" class="stack">
+      <% if(user.isAdmin) { %>
         <div class="stackContent">
           <%- admin %>
         </div>
-      </div>
-    <% } %>
-    <div id="container" class="container">
-      <div id="header">
-        <%- header %>
-      </div>
-      <div id="messages">
-        <%- messages %>
-      </div>
-        <% if(user.isAdmin) { %>
-        <div id="adminToolbar">
-          <%- getMenu('adminToolbar') %>
-        </div>
       <% } %>
-      <div id="body" class="body">
-        <%- body %>
-      </div>
-      <div id="right">
-        <div id="menu">
-          <%- primary %>
+      <div class="container">
+        <div class="stack4of5">
+          <%- header %>
         </div>
-        <%- right %>
-      </div>
-      <div style="clear:both"></div>
-      <div id="footer">
-        <%- footer %>
+        <div class="stack1of5">
+          <%- searchform %>
+        </div>
+        <div id="messages" class="stackContent">
+          <%- messages %>
+        </div>
+        <% if(user.isAdmin) { %>
+          <div id="adminToolbar" class="stackContent">
+            <%- getMenu('adminToolbar') %>
+          </div>
+        <% } %>
+        <div class="stack2of3">
+          <%- body %>
+        </div>
+        <div class="stack1of3">
+          <div class="stackContent">
+            <%- right %>
+          </div>
+        </div>
+        <div id="footer" class="">
+          <%- footer %>
+        </div>
+        <div style="display: none">
+          <%- scripts %>
+        </div>
       </div>
     </div>
   </body>
-  <%- scripts %>
 </html>
