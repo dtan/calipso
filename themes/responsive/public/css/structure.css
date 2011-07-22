@@ -181,8 +181,14 @@ p { margin: 10px 0; }
 #submit { margin: 20px; }
 
 /* form update */
-.form-item.field-type-select label { display: inline-block; }
+.form-item.field-type-checkbox label,
+.form-item.field-type-select label,
 .form-item.field-type-select select { display: inline-block; }
+.form-item.field-type-text input { padding: 0; width: 100%; }
+
+/* markItUp overrides */
+.markItUp { width: 100% !important; }
+.markItUpEditor { width: 98.25%; }
 
 
 /* prettyprint.css override */
@@ -193,6 +199,7 @@ p { margin: 10px 0; }
 #adminToolbar ul { float: none; position: relative; width: 100%; }
 #adminToolbar li.adminToolbar-menu-item,
 #adminToolbar li.adminToolbar-menu-item-selected { display: inline-block; }
+#adminToolbar ul, #adminToolbar li { width: auto; }
 
 ul.tabs {
   height: 32px;
