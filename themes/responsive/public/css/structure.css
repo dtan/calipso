@@ -170,15 +170,20 @@ p { margin: 10px 0; }
 #footer { margin: 20px 0; }
 
 /* search form */
-.searchForm input.text { display: inline-block; width: 70%; }
+.searchForm input.text { display: inline-block; width: 65%; }
 .searchForm input.text + .actions { display: inline-block; margin-left: 5px; }
 
 /* form */
-.form-field { padding-bottom: 10px; }
+.form-field { padding-top: 10px; }
 .form-field label { display: block; }
 .form-field label ~ select { display: inline; }
 .form-field input[type=checkbox] ~ label { display: inline; margin-left: 5px; }
 #submit { margin: 20px; }
+
+/* form update */
+.form-item.field-type-select label { display: inline-block; }
+.form-item.field-type-select select { display: inline-block; }
+
 
 /* prettyprint.css override */
 .prettyprint { overflow-y: hidden; width: 100%; }
