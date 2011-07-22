@@ -14,16 +14,11 @@ exports = module.exports = function(req, options, callback) {
       options.getContent(req, "footer-about-calipso", this.parallel());
       options.getContent(req, "footer-links", this.parallel());
       options.getContent(req, "footer-right", this.parallel());
-options.getBlock(/footer.*/, this.parallel());
-/*
-      options.getContent(req, "footer-about-calipso", this.parallel());
-      options.getContent(req, "footer-links", this.parallel());
-      options.getContent(req, "footer-right", this.parallel());
-      options.getBlock("dev.tools", this.parallel());
-*/
+      options.getBlock(/content.dev.*/, this.parallel());
+      options.getBlock(/footer.*/, this.parallel());
     },
-    function done(err, left, center, right, footer) {
-      callback(err,{left:left, center:center, right:right, footer:footer});
+    function done(err, left, center, right, contentDebug, footer) {
+      callback(err,{left:left, center:center, right:right, contentDebug:contentDebug, footer:footer});
     }
   );
   
