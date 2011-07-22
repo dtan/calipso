@@ -236,7 +236,7 @@ function createContent(req,res,template,block,next) {
                 next();
 
               } else {
-
+console.log('date: ', new Date())
                 // Copy over content type data - in meta as this is
                 // not mastered here
                 c.contentType = contentType.contentType;
@@ -515,6 +515,7 @@ function updateContent(req,res,template,block,next) {
                                        
               // Fields that are mapped specifically
               c.updated = new Date();
+              console.log("============= content-list: ", c.updated)
               c.alias = form.content.alias ? form.content.alias : titleAlias(c.title);
               c.tags = form.content.tags ? form.content.tags.replace(/[\s]+/g, "").split(",") : [];
               
@@ -833,7 +834,9 @@ function getContentList(query,out,next) {
                         columns:[{name:'_id',sort:'title',label:'Title',fn:contentLink},                              
                                 {name:'contentType',label:'Type'},
                                 {name:'status',label:'Status'},
-                                {name:'published',label:'Published'}
+                                {name:'published',label:'Published'},
+                                {name:'updated',label:'Last Updated'}
+                                
                         ],
                         data:contents,
                         view:{
