@@ -1,0 +1,20 @@
+<div class='devtools'>
+  <div class='blocks'>
+    <p>Blocks on this page:</p>
+    <ul>
+    <%
+      var blockNames = [];
+      for(var block in blocks.content) {
+        blockNames.push(block);
+      }
+      blockNames.sort();
+      for (var i = 0, len = blockNames.length; i < len; i++) {
+        var block = blockNames[i];
+    %>
+      <li><%- block %></li>
+    <%  
+      }
+    %>
+    </ul>
+  </div>
+</div>
