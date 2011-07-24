@@ -190,7 +190,7 @@ function document(req, res, template, block, next) {
   var fileType = "module"; // Default
   if (!include && !templateFile && !library) {
     // We are getting the module itself
-    filePath = calipso.modules[module].path + "/" + module + ".module.js";
+    filePath = calipso.modules[module].path + "/" + module + ".js";
   }
 
   if (include && !library) {
@@ -236,7 +236,7 @@ function document(req, res, template, block, next) {
 
         case "module":
 
-          var dox = require('./dox');
+          var dox = require('./dox.library');
           output = dox.parseComments(source);
 
           templates = linkTemplates(module, output);
@@ -245,7 +245,7 @@ function document(req, res, template, block, next) {
 
         case "library":
 
-          var dox = require('./dox');
+          var dox = require('./dox.library');
           output = dox.parseComments(source);
 
           requires = linkRequired(module, output, true);

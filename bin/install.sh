@@ -4,7 +4,7 @@
 # Make sure we have node and npm installed
 node=$(node --version)
 npm=$(npm --version)
-KEY_MODULES=(express mongodb)
+KEY_MODULES=(mongodb)
 
 E_ERROR=1
 
@@ -27,13 +27,6 @@ else
   exit $E_ERROR
 fi
 
-# Lets try npm install
-echo "Installing dependencies via NPM ... please be patient this can take a few minutes ..."
-npmResult=$(npm install)
-
-# Fix for mongodb native
-npmResult=$(npm install mongodb --mongodb:native)
-
 # Quick check of key modules
 npm_local=$(npm root)
 npm_global=$(npm root -g)
@@ -53,14 +46,6 @@ for module in "${KEY_MODULES[@]}"; do
     fi
 done
 
-# Run full module install
-echo 'Checking all module dependencies ...'
-calipso modules check
-
-# Lets try our sanity test
-echo 'Running sanity tests ...'
-sanityTest=$(make)
-
 # Check to see if we got all 100%
-echo 'If you can see 100% success on the sanity tests then you are probably good to go!'
-exit $sanityTest
+echo 'Installation completed, please try the command "calipso" to test the installation.'
+exit 0
