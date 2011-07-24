@@ -12,12 +12,11 @@ exports = module.exports = function(req, options, callback) {
   calipso.lib.step(
     function getContent() {
       options.getContent(req, "about-me", this.parallel());
-      options.getBlock('user.login',this.parallel());
       options.getBlock('tagcloud',this.parallel());
       options.getBlock(/footer.*/, this.parallel());
     },
-    function done(err, about, userLogin, tagcloud, footer) {
-      callback(err,{about:about,userLogin:userLogin, tagcloud:tagcloud, blockInfo:footer});
+    function done(err, about, tagcloud, footer) {
+      callback(err,{about:about, tagcloud:tagcloud, blockInfo:footer});
     }
   );
 
