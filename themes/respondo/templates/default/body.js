@@ -13,10 +13,11 @@ exports = module.exports = function(req, options, callback) {
     function getContent() {
       options.getBlock(/^content.*/, this.parallel());
       options.getBlock(/^admin.*/,this.parallel());
+      options.getBlock(/^login.*/,this.parallel());
       options.getBlock('scripts.disqus',this.parallel());
     },
-    function done(err, content, admin, disqus) {
-      callback(err,{content:content,admin:admin,disqus: disqus});
+    function done(err, content, admin, login, disqus) {
+      callback(err,{ content: content, admin: admin, login: login, disqus: disqus});
     }
   );
 
