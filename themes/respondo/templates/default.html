@@ -19,13 +19,20 @@
     <%- typekit %>
   </head>
   <body>
-    <div id="page" class="stack">
+    <div id="page" class="stack <%- getPageClasses %>">
       <% if(user.isAdmin) { %>
         <div class="stackContent">
           <%- admin %>
         </div>
       <% } %>
       <div class="container">
+        <!--
+        <div class="stackContent">
+          <nav class="primary">
+            <%- primary %>
+          </nav>
+        </div>
+      -->
         <div class="stack2of3 header-area">
           <%- header %>
         </div>
@@ -43,11 +50,11 @@
         <div class="stack2of3 main-content">
           <%- body %>
         </div>
-        <div class="stack1of3 side-bar">
-          <div class="stackContent">
+        <% if (!isAdminPage) { %>
+          <div class="stack1of3 sidebar">
             <%- right %>
           </div>
-        </div>
+        <% } %>
         <div id="footer" class="">
           <%- footer %>
         </div>
