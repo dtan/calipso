@@ -236,7 +236,7 @@ function createContent(req,res,template,block,next) {
                 next();
 
               } else {
-console.log('date: ', new Date())
+
                 // Copy over content type data - in meta as this is
                 // not mastered here
                 c.contentType = contentType.contentType;
