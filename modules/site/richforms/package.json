@@ -1,0 +1,11 @@
+{
+  "name": "richforms",
+  "description": "Enables the jQuery UI Datepicker + Timepicker, and MarkitUp Rich Text Editor for date / text area controls respectively.",
+  "version": "0.2.1",
+  "homepage": "http://calip.so",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dtan/calipso-richforms.git"
+  },
+  "author": "dale tan <wtdtan@gmail.com> (whatthedale.com)"
+}
