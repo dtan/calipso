@@ -14,3 +14,7 @@
     left:0 !important;
 }
 
+.stack4of5.header-area, 
+.stack2of3.main-content { width: 66.667%; } 
+.stack1of5.header-area,
+.stack1of3.side-bar { width: 33.334%; }

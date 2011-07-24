@@ -1,2 +1,4 @@
 /* standard: 978px */
 .container { margin: 0 auto; width: 978px; }
+.searchForm input.text { width: 60%; }
+

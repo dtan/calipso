@@ -17,6 +17,11 @@
 
 .stack2of3 .stack1of3 { width: 50%; }
 
+.stack4of5.header-area, 
+.stack2of3.main-content { width: 66.667%; } 
+.stack1of5.header-area,
+.stack1of3.side-bar { width: 33.334%; }
+
 @media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait) {  }
 
 @media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape) {  }
@@ -27,3 +32,5 @@
 @media only screen and (max-device-width: 480px) and (orientation:landscape) { }
 
 html { -webkit-text-size-adjust:none; -ms-text-size-adjust:none; }
+
+
