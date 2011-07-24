@@ -29,6 +29,9 @@
           },
           "elastic":{
             "results":"modules/elastic/results.html"
+          },
+          "devtools": {
+            "devtools": "modules/devtools/devtools.html"
           }
         }
       }

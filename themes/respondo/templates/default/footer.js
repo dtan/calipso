@@ -15,10 +15,9 @@ exports = module.exports = function(req, options, callback) {
       options.getContent(req, "footer-links", this.parallel());
       options.getContent(req, "footer-right", this.parallel());
       options.getBlock(/content.dev.*/, this.parallel());
-      options.getBlock(/footer.*/, this.parallel());
     },
-    function done(err, left, center, right, contentDebug, footer) {
-      callback(err,{left:left, center:center, right:right, contentDebug:contentDebug, footer:footer});
+    function done(err, left, center, right, contentDebug) {
+      callback(err,{left:left, center:center, right:right, contentDebug:contentDebug});
     }
   );
   

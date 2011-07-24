@@ -170,7 +170,7 @@ p { margin: 10px 0; }
 #footer { margin: 20px 0; }
 
 /* search form */
-.searchForm input.text { display: inline-block; width: 65%; }
+.searchForm input.text { display: inline-block; width: 75%; }
 .searchForm input.text + .actions { display: inline-block; margin-left: 5px; }
 
 /* form */

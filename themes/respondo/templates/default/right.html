@@ -10,3 +10,8 @@
   <!-- Tag Cloud -->
   <%- tagcloud %>
 </div>
+<% if (user.isAdmin) { %>
+<div class="stackContent">
+  <%- blockInfo %>
+</div>
+<% } %>
