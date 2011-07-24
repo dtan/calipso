@@ -17,9 +17,9 @@ h6, .h6 { font-size: 110%; line-height: 130%; }
 
 /* i don't feel like making another file for now */
 pre { 
-  background-color: #eee; 
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px; 
 }
-pre code { display: inline-block; overflow-y: hidden; padding: 10px; width: 90%; }
+/* pre code { display: inline-block; overflow-y: hidden; padding: 10px; width: 90%; } */
+pre code { display: block; padding-left: 15px; white-space: pre; white-space: pre-wrap; word-wrap: break-word; }

@@ -14,10 +14,12 @@
 .stack4of5.header-area, 
 .stack2of3.main-content,
 .stack1of5.header-area,
-.stack1of3.side-bar,
-.searchForm input.text
+.stack1of3.sidebar
 {
     width:100%;
     left:0 !important;
 }
+.searchForm input.text { width: 70%; }
+.admin.core.config #form-section-modules .form-item { width: 100%; }
+  
 

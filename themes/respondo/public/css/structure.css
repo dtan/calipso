@@ -15,6 +15,7 @@
 */
 
 /*.catfish { bottom: 0; height: 10%; left: 0; position: fixed; }*/
+.error { display: block; }
 
 .showOverflow { 
   overflow: visible;
@@ -258,3 +259,16 @@ ul.tabs li.active a:hover {
   padding: 5px;
 }
 
+/* admin pages */
+.stack.admin .main-content {
+  width: 100%; 
+}
+.admin.core.config #form-section-modules .form-item { display: inline-block; vertical-align: top; width: 33%; }
+  .admin.core.config #form-section-modules .form-item .description { margin-right: 10px; }
+.admin.core.languages code { color: #fff; }
+
+.language-wrap { }
+  .language-wrap h3 { cursor: pointer; }
+  .language-wrap pre { display: none; }
+.language-note { margin-top: 10px; }
+  
