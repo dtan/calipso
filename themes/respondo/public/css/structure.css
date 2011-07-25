@@ -260,9 +260,14 @@ ul.tabs li.active a:hover {
 }
 
 /* admin pages */
-.stack.admin .main-content {
-  width: 100%; 
-}
+.stack.admin .main-content,
+.stack.content.edit .main-content,
+.stack.content.new .main-content { width: 100%; }
+
+.stack.admin .sidebar,
+.stack.content.new .sidebar,
+.stack.content.edit .sidebar { display: none; }
+
 .admin.core.config #form-section-modules .form-item { display: inline-block; vertical-align: top; width: 33%; }
   .admin.core.config #form-section-modules .form-item .description { margin-right: 10px; }
 .admin.core.languages code { color: #fff; }
