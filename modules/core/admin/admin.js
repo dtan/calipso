@@ -76,15 +76,20 @@ function init(module, app, next) {
     module.router.addRoute('GET /admin/install', install, null, this.parallel());
 
 
-  }, function done() {
+  }, 
+  function done() {
 
     // Load the available themes into the calipso data object
     // Used when rendering the edit form
+
+    // break this out later
+    calipso.data.themesAdmin = [];
+
     calipso.data.themes = [];
     calipso.lib.fs.readdir(app.path + '/themes', function(err, folders) {
-
       folders.forEach(function(name) {
-        if (name !='.DS_Store'){
+        if (name !== '.DS_Store' && name !== 'admin'){
+            calipso.data.themesAdmin.push(name);          
             calipso.data.themes.push(name);
         }
       });
@@ -257,7 +262,6 @@ function showAdmin(req, res, template, block, next) {
  * TODO Refactor this to a proper form
  */
 function coreConfig(req, res, template, block, next) {
-
   
   //res.menu.admin.secondary.push({ name: req.t('Configuration'),url: '/admin/core/config',regexp: /admin\/config/}); 
   //res.menu.admin.secondary.push({ name: req.t('Languages'),url: '/admin/core/languages',regexp: /admin\/admin/});
@@ -281,14 +285,18 @@ function coreConfig(req, res, template, block, next) {
     var item = {
       id: config._id,
       type: 'config',
+      // found in /conf/configuration.js
       meta: config.toObject()
     };
+
+    // calipso.data can be added from different /lib files, among other places, but look in those files first
 
     var values = {
       config: {
         watchFiles: item.meta.watchFiles,
         language: item.meta.language,
         theme: item.meta.theme,
+        themeAdmin: item.meta.themeAdmin || 'nubick',
         logslevel: item.meta.logs.level,
         logsconsoleenabled:  item.meta.logs.console.enabled,
         logsfileenabled: item.meta.logs.file.enabled,
@@ -334,6 +342,13 @@ function coreConfig(req, res, template, block, next) {
               type:'select',
               value:item.meta.theme,
               options: calipso.data.themes
+            },
+            {
+              label:'Admin Theme',
+              name:'config[themeAdmin]',
+              type:'select',
+              value: item.meta.themeAdmin,
+              options: calipso.data.themesAdmin
             }
           ]
         },

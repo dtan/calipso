@@ -118,8 +118,21 @@ function bootApplication(app, next) {
         .set('warn', true)
         .set('compress', true);
     }
+  }),
+  adminStylusMiddleware = stylus.middleware({
+    tag: 'themeAdminStatic',
+    src: __dirname + '/themes/' + theme + '/stylus', // .styl files are located in `views/stylesheets`
+    dest: __dirname + '/themes/' + theme + '/public', // .styl resources are compiled `/stylesheets/*.css`
+    debug: false,
+    compile: function(str, path) { // optional, but recommended
+      return stylus(str)
+        .set('filename', path)
+        .set('warn', true)
+        .set('compress', true);
+    }
   });
   app.use(stylusMiddleware);
+  app.use(adminStylusMiddleware);
   
   var oneDay = 86400000;
   
@@ -127,6 +140,10 @@ function bootApplication(app, next) {
   var themeStatic = express.static(path + '/themes/' + theme + '/public',{maxAge:oneDay});  
   themeStatic.tag = 'themeStatic';
   app.use(themeStatic);
+  
+  var themeAdminStatic = express.static(path + '/themes/' + theme + '/public',{maxAge:oneDay});  
+  themeAdminStatic.tag = 'themeAdminStatic';
+  app.use(themeAdminStatic);
   
   // Media paths  
   app.use(express.static(path + '/media',{maxAge:oneDay}));      

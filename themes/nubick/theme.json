@@ -1,0 +1,27 @@
+{
+  "name": "nubick",
+  "description": "Admin theme inspired by Rubick",
+  "version": "0.0.1",
+  "author": "dale tan <wtdtan@gmail.com>",
+  "layouts": {
+    "default": {
+      "layout": {
+        "template": "default.html",
+        "sections": { }
+      }
+    },
+    "admin": {
+      "layout": {
+        "template": "admin.html",
+        "sections": {
+          "scripts"  : { "template": "scripts.html" },
+          "styles"   : { "template": "styles.html" },
+          "header"   : { "template": "header.html" },
+          "messages" : { "template": "messages.html" },
+          "body"     : { "template": "body.html" },
+          "footer"   : { "template": "footer.html" }
+        }
+      }
+    }
+  }
+}

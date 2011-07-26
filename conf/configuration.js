@@ -1,7 +1,8 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
     
-var defaultTheme = 'cleanslate';
+var defaultTheme = 'cleanslate',
+  defaultThemeAdmin = 'nubick';
 
 /**
  * Default configuration manager This file controls the loading, and initial
@@ -21,6 +22,8 @@ module.exports = function(app, express, next) {
     version:1,  // Used to warn - e.g. structural changes require a config reset
     cache: false,
     theme: defaultTheme,
+    themeSite: defaultTheme,
+    themeAdmin: defaultThemeAdmin,
     language: 'en',
     install: true,
     cryptoKey: createRandomString(),
@@ -67,6 +70,11 @@ module.exports = function(app, express, next) {
       type: String,
       required: true,
       'default': 'default'
+    },
+    themeAdmin: {
+      type: String,
+      required: true,
+      'default': defaultThemeAdmin
     },
     install: {
       type: Boolean,
