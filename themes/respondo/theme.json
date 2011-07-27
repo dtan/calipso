@@ -16,7 +16,7 @@
           "header"  : { "template": "header.html" },
           "messages": { "template": "messages.html" },
           "body"    : { "template": "body.html" },
-          "right"   : { "template": "right.html" },
+          "sidebar" : { "template": "sidebar.html" },
           "footer"  : { "template": "footer.html" },
           "searchform": { "template": "searchForm.html" }
         },
