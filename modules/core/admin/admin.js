@@ -237,17 +237,14 @@ function install(req, res, template, block, next) {
 
 }
 
-
 /**
  * Show the current configuration
  * TODO Refactor this to a proper form
  */
 function showAdmin(req, res, template, block, next) {
-  
   //res.menu.admin.secondary.push({ name: req.t('Configuration'),url: '/admin/core/config',regexp: /admin\/config/}); 
   //res.menu.admin.secondary.push({ name: req.t('Languages'),url: '/admin/core/languages',regexp: /admin\/admin/});
   //res.menu.admin.secondary.push({ name: req.t('Cache'),url: '/admin/core/cache',regexp: /admin\/cache/});
-  
   calipso.theme.renderItem(req, res, template, block, {},next);
 
 }
@@ -257,18 +254,15 @@ function showAdmin(req, res, template, block, next) {
  * TODO Refactor this to a proper form
  */
 function coreConfig(req, res, template, block, next) {
-
   
   //res.menu.admin.secondary.push({ name: req.t('Configuration'),url: '/admin/core/config',regexp: /admin\/config/}); 
   //res.menu.admin.secondary.push({ name: req.t('Languages'),url: '/admin/core/languages',regexp: /admin\/admin/});
   //res.menu.admin.secondary.push({ name: req.t('Cache'),url: '/admin/core/cache',regexp: /admin\/cache/});
-  
-  
+
   //set the languages array
   calipso.data.loglevels = [];
 
-  //console.log(calipso.modules);
-
+  var preProcess = typeof arguments[5] === 'function' ? arguments[5] : null;
 
   for(var level in calipso.lib.winston.config.npm.levels){
     calipso.data.loglevels.push(level);
@@ -392,12 +386,15 @@ function coreConfig(req, res, template, block, next) {
       ]
     };
 
+    if (preProcess) {
+      adminForm = preProcess(item, req, res, adminForm);
+    }
 
     // populate the Modules form fields
     var adminModuleFields = adminForm.sections[3].fields;
     var tempModuleFields = {core:[],community:[],site:[]};
     var readonlyModules = ["admin","user","content","contentTypes"]; // Modules that cant be disabled
-    
+
     // load up the tempModuleFields (according to module category)
     for(var moduleName in calipso.modules) {
       var cM = {};
@@ -414,6 +411,7 @@ function coreConfig(req, res, template, block, next) {
       
       //adminModuleFields[moduleFieldMap[module.type]].fields.push(cM);
       tempModuleFields[module.type].push(cM);
+
     }
     
     // add only non-empty fieldsets for module categories
