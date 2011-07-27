@@ -1,13 +1,19 @@
 <div class="stackContent">
+  <div class="padding-s0">
   <!-- Dynamic section content -->
-  <%- about %>
+    <%- about %>
+  </div>
 </div>
 <div class="stackContent">
-  <!-- Tag Cloud -->
-  <%- tagcloud %>
+  <div class="padding-s0">
+    <!-- Tag Cloud -->
+    <%- tagcloud %>
+  </div>
 </div>
 <% if (user.isAdmin) { %>
 <div class="stackContent">
-  <%- blockInfo %>
+  <div class="padding-s0">
+    <%- blockInfo %>
+  </div>
 </div>
 <% } %>
