@@ -280,7 +280,14 @@ ul.tabs li.active a:hover {
 textarea { padding: 0; width: 100%; }
 
 
-
+/* box stuff */
+.box { margin: 10px; height: 300px; }
+.box-shadow-1 {
+  -moz-box-shadow: 0 0 10px #666;
+  -webkit-box-shadow: 0 0 10px #666;
+  -ms-box-shadow: 0 0 10px #666;
+  box-shadow: 0 0 10px #666;
+}
 
 
 
