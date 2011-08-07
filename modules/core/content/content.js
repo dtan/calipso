@@ -18,19 +18,12 @@ exports = module.exports = {
  */
 function route(req,res,module,app,next) {
 
-      /**
-       * Menu items
-       */
-      res.menu.admin.addMenuItem({name:'Content Management',path:'cms',url:'/content',description:'Manage content ...',security:[]});
-      res.menu.admin.addMenuItem({name:'Content',path:'cms/content',url:'/content',description:'Manage content ...',security:[]});                  
-      
-      /**
-       * Routing and Route Handler
-       */
-      module.router.route(req,res,next);
+  res.menu.admin.addMenuItem({name:'Content Management',path:'cms',url:'/content',description:'Manage content ...',security:[]});
+  res.menu.admin.addMenuItem({name:'Content',path:'cms/content',url:'/content',description:'Manage content ...',security:[]});
+
+  module.router.route(req,res,next);
 
 }
-
 
 /**
  * Module initiation
@@ -43,7 +36,7 @@ function init(module,app,next) {
   calipso.e.addEvent('CONTENT_DELETE');
   calipso.e.addEvent('CONTENT_CREATE_FORM');
   calipso.e.addEvent('CONTENT_UPDATE_FORM');
-  
+
   // There are dependencies, so we need to track if this is initialised
   module.initialised = false;
 
@@ -51,23 +44,25 @@ function init(module,app,next) {
       function defineRoutes() {
 
         // Default routes
-        module.router.addRoute('GET /',homePage,{template:'list',block:'content'},this.parallel());
-        
+        module.router.addRoute('GET /',homePage,{template:'list',block:'content.home'},this.parallel());
+
         // TODO
-        module.router.addRoute('GET /tag/:tag.:format?',listContent,{template:'list',block:'content'},this.parallel());        
-        module.router.addRoute('GET /section/:t1?/:t2?/:t3?/:t4?.:format?',listContent,{template:'list',block:'content'},this.parallel());
+        module.router.addRoute('GET /tag/:tag.:format?',listContent,{template:'list',cache:false,block:'content.tag.list'},this.parallel());
+        module.router.addRoute('GET /section/:t1?/:t2?/:t3?/:t4?.:format?',listContent,{template:'list',cache:false,block:'content.section.list'},this.parallel());
 
         // Alias for SEO friendly pages, match to prefix excluding content pages
-        module.router.addRoute(/^((?!content).*)\.html/,showAliasedContent,{template:'show',block:'content'},this.parallel());
-        module.router.addRoute(/^((?!content).*)\.json/,showAliasedContent,{template:'show',block:'content'},this.parallel());
+        //module.router.addRoute(/^\/((?!content).*)\.html/,showAliasedContent,{template:'show',block:'content.show.html'},this.parallel());
+        //module.router.addRoute(/^\/((?!content).*)\.json/,showAliasedContent,{template:'show',block:'content.show.json'},this.parallel());
+
+        module.router.addRoute("GET /:alias.:format",showAliasedContent,{template:'show',block:'content.show',cache:true},this.parallel());
 
         // Admin operations
-        module.router.addRoute('GET /content',listContent,{admin:true,template:'listAdmin',block:'content'},this.parallel());
-        module.router.addRoute('GET /content/list.:format?',listContent,{admin:true,template:'listAdmin',block:'content'},this.parallel());
+        module.router.addRoute('GET /content',listContent,{admin:true,template:'listAdmin',block:'content.list'},this.parallel());
+        module.router.addRoute('GET /content/list.:format?',listContent,{admin:true,template:'listAdmin',block:'content.list'},this.parallel());
         module.router.addRoute('POST /content',createContent,{admin:true},this.parallel());
-        module.router.addRoute('GET /content/new',createContentForm,{admin:true,block:'content'},this.parallel());
-        module.router.addRoute('GET /content/show/:id.:format?',showContentByID,{admin:true,template:'show',block:'content'},this.parallel());
-        module.router.addRoute('GET /content/edit/:id',editContentForm,{admin:true,block:'content'},this.parallel());
+        module.router.addRoute('GET /content/new',createContentForm,{admin:true,block:'content.create'},this.parallel());
+        module.router.addRoute('GET /content/show/:id.:format?',showContentByID,{admin:true,template:'show',block:'content.show'},this.parallel());
+        module.router.addRoute('GET /content/edit/:id',editContentForm,{admin:true,block:'content.edit'},this.parallel());
         module.router.addRoute('GET /content/delete/:id',deleteContent,{admin:true},this.parallel());
         module.router.addRoute('POST /content/:id',updateContent,{admin:true},this.parallel());
 
@@ -134,9 +129,9 @@ function init(module,app,next) {
           scheduled: { type: Date },
           created: { type: Date, default: Date.now },
           updated: { type: Date, default: Date.now },
-          contentType:{type: String},  // Copy from content type          
+          contentType:{type: String},  // Copy from content type
           layout:{type: String},       // Copy from content type
-          ispublic:{type: Boolean}    // Copy from content type        
+          ispublic:{type: Boolean}    // Copy from content type
         });
 
         // Set post hook to enable simple etag generation
@@ -246,21 +241,23 @@ function createContent(req,res,template,block,next) {
                 // Emit event pre-save, this DOES NOT Allow you to change
                 // The content item (yet).
                 calipso.e.pre_emit('CONTENT_CREATE',c,function(c) {
-                
+
                   c.save(function(err) {
                     if(err) {
                       calipso.debug(err);
+                      // TODO : err.errors is an object that contains actual fields, can pass back actual errors
+                      // To the form
                       req.flash('error',req.t('Could not save content because {msg}.',{msg:err.message}));
                       if(res.statusCode != 302) {
-                          res.redirect('/content/new');
+                          res.redirect('/content/new?type='+form.content.contentType);
                       }
                       next();
                     } else {
                       req.flash('info',req.t('Content saved.'));
-                      
+
                       // Raise CONTENT_CREATE event
                       calipso.e.post_emit('CONTENT_CREATE',c,function(c) {
-                          
+
                         if(returnTo) {
                           res.redirect(returnTo);
                         } else {
@@ -268,11 +265,11 @@ function createContent(req,res,template,block,next) {
                         }
                         next();
                       });
-                      
+
                     }
-                    
+
                   });
-                  
+
                 });
               }
 
@@ -347,33 +344,33 @@ function getForm(req,action,title,contentType,next) {
 function createContentForm(req,res,template,block,next) {
 
   // Allow defaults to be passed in
-  if(req.moduleParams.type) { 
-    
-    // we have had one passed in, use it and continue    
+  if(req.moduleParams.type) {
+
+    // we have had one passed in, use it and continue
     createContentFormByType(req,res,template,block,next);
-    
-  } else {    
-    
+
+  } else {
+
     var alias = req.moduleParams.alias ? req.moduleParams.alias : "";
     var teaser = req.moduleParams.teaser ? req.moduleParams.teaser : "";
-    var taxonomy = req.moduleParams.taxonomy ? req.moduleParams.taxonomy : "";  
-    var returnTo = req.moduleParams.returnTo ? req.moduleParams.returnTo : "";  
-    var type = "Article";         // Hard coded default TODO fix      
-    
+    var taxonomy = req.moduleParams.taxonomy ? req.moduleParams.taxonomy : "";
+    var returnTo = req.moduleParams.returnTo ? req.moduleParams.returnTo : "";
+    var type = "Article";         // Hard coded default TODO fix
+
     // Create the form
     var form = {id:'content-type-form',title:'Create Content ...',type:'form',method:'GET',action:'/content/new',tabs:true,
           fields:[
             {label:'Type',name:'type',type:'select',options:function() { return calipso.data.contentTypes },description:'Select the type of content you want to create ...'},
             {label:'',name:'alias',type:'hidden'},
             {label:'',name:'teaser',type:'hidden'},
-            {label:'',name:'taxonomy',type:'hidden'},            
+            {label:'',name:'taxonomy',type:'hidden'},
             {label:'',name:'returnTo',type:'hidden'}
           ],
           buttons:[
                {name:'submit',type:'submit',value:'Next'}
           ]};
 
-    
+
     // Default values
     var values = {
         content: {
@@ -383,15 +380,15 @@ function createContentForm(req,res,template,block,next) {
         teaser:teaser,
         taxonomy:taxonomy
     }
-    
+
     res.layout = 'admin';
-    
+
     calipso.form.render(form,values,req,function(form) {
       calipso.theme.renderItem(req,res,form,block,{},next);
     });
-    
+
   }
-  
+
 }
 
 /**
@@ -400,15 +397,15 @@ function createContentForm(req,res,template,block,next) {
  * This allows some defaults to be passed through (e.g. from missing blocks).
  */
 function createContentFormByType(req,res,template,block,next) {
-  
+
   var type = req.moduleParams.type ? req.moduleParams.type : "Article";         // Hard coded default TODO fix
-  
+
   // Allow defaults to be passed in
   var alias = req.moduleParams.alias ? req.moduleParams.alias : "";
   var teaser = req.moduleParams.teaser ? req.moduleParams.teaser : "";
-  var taxonomy = req.moduleParams.taxonomy ? req.moduleParams.taxonomy : "";  
-  var returnTo = req.moduleParams.returnTo ? req.moduleParams.returnTo : "";  
-  
+  var taxonomy = req.moduleParams.taxonomy ? req.moduleParams.taxonomy : "";
+  var returnTo = req.moduleParams.returnTo ? req.moduleParams.returnTo : "";
+
   // Create the form
   getForm(req,"/content",req.t("Create Content ..."),type,function(form) {
 
@@ -425,10 +422,10 @@ function createContentFormByType(req,res,template,block,next) {
     }
 
     res.layout = 'admin';
-    
+
     calipso.e.pre_emit('CONTENT_CREATE_FORM',form,function(form) {
-      calipso.form.render(form,values,req,function(form) {        
-          calipso.theme.renderItem(req,res,form,block,{},next);          
+      calipso.form.render(form,values,req,function(form) {
+          calipso.theme.renderItem(req,res,form,block,{},next);
       });
     });
   });
@@ -448,7 +445,7 @@ function editContentForm(req,res,template,block,next) {
 
   var returnTo = req.moduleParams.returnTo ? req.moduleParams.returnTo : "";
 
-  res.menu.adminToolbar.addMenuItem({name:'List',weight:1,path:'list',url:'/content/',description:'List all ...',security:[]});        
+  res.menu.adminToolbar.addMenuItem({name:'List',weight:1,path:'list',url:'/content/',description:'List all ...',security:[]});
   res.menu.adminToolbar.addMenuItem({name:'View',weight:2,path:'show',url:'/content/show/' + id,description:'Show current ...',security:[]});
   res.menu.adminToolbar.addMenuItem({name:'Edit',weight:3,path:'edit',url:'/content/edit/' + id,description:'Edit content ...',security:[]});
   res.menu.adminToolbar.addMenuItem({name:'Delete',weight:4,path:'delete',url:'/content/delete/' + id,description:'Delete content ...',security:[]});
@@ -512,13 +509,13 @@ function updateContent(req,res,template,block,next) {
 
               // Default mapper
               calipso.form.mapFields(form.content,c);
-                                       
+
               // Fields that are mapped specifically
               c.updated = new Date();
               console.log("============= content-list: ", c.updated)
               c.alias = form.content.alias ? form.content.alias : titleAlias(c.title);
               c.tags = form.content.tags ? form.content.tags.replace(/[\s]+/g, "").split(",") : [];
-              
+
               // Get content type
               ContentType.findOne({contentType:form.content.contentType}, function(err, contentType) {
 
@@ -535,11 +532,11 @@ function updateContent(req,res,template,block,next) {
 
                     // Emit pre event
                     // This does not allow you to change the content
-                    calipso.e.pre_emit('CONTENT_CREATE',c,function(c) {                    
-                        
+                    calipso.e.pre_emit('CONTENT_CREATE',c,function(c) {
+
                       c.save(function(err) {
                         if(err) {
-                          
+
                           var errorMsg = '';
                           if(err.errors) {
                             for(var error in err.errors) {
@@ -553,11 +550,11 @@ function updateContent(req,res,template,block,next) {
                             res.redirect('back');
                           }
                           next();
-                          
+
                         } else {
-                           
+
                           req.flash('info',req.t('Content saved.'));
-                          
+
                           // Raise CONTENT_CREATE event
                           calipso.e.post_emit('CONTENT_UPDATE',c,function(c) {
                             if(returnTo) {
@@ -568,13 +565,13 @@ function updateContent(req,res,template,block,next) {
                             }
                             next();
                           });
-                          
-                        }                        
-  
+
+                        }
+
                       });
-                      
-                    });               
-                    
+
+                    });
+
                   }
 
               });
@@ -619,16 +616,16 @@ function showAliasedContent(req,res,template,block,next) {
         next();
 
       } else {
-       
-        calipso.modules.user.fn.userDisplay(req,content.author,function(err, userDetails) {    
+
+        calipso.modules.user.fn.userDisplay(req,content.author,function(err, userDetails) {
           if(err) {
             next(err);
           } else {
             // Add the user display details to content
             content.set('displayAuthor',userDetails);
             showContent(req,res,template,block,next,err,content,format);
-          }      
-        });        
+          }
+        });
 
       }
 
@@ -646,7 +643,7 @@ function showContentByID(req,res,template,block,next) {
   var format = req.moduleParams.format ? req.moduleParams.format : 'html';
 
   Content.findById(id, function(err, content) {
-      
+
     // Error locating content
     if(err) {
       res.statusCode = 500;
@@ -654,11 +651,11 @@ function showContentByID(req,res,template,block,next) {
       next();
       return;
     }
-    
+
     // Content found
     if(content) {
-      
-      calipso.modules.user.fn.userDisplay(req,content.author,function(err, userDetails) {    
+
+      calipso.modules.user.fn.userDisplay(req,content.author,function(err, userDetails) {
           if(err) {
             next(err);
           } else {
@@ -666,16 +663,16 @@ function showContentByID(req,res,template,block,next) {
             content.set('displayAuthor',userDetails);
             showContent(req,res,template,block,next,err,content,format);
           }
-      
+
       });
-      
-    } else {      
+
+    } else {
       // Show a 404
-      res.statusCode = 404;      
+      res.statusCode = 404;
       next();
-      
+
     }
-    
+
   });
 
 }
@@ -692,14 +689,14 @@ function showContent(req,res,template,block,next,err,content,format) {
     item = {title:"Not Found!",content:"Sorry, I couldn't find that content!"};
 
   } else {
-    
+
     res.menu.adminToolbar.addMenuItem({name:'Create',weight:3,path:'new',url:'/content/new',description:'Create content ...',security:[]});
     res.menu.adminToolbar.addMenuItem({name:'List',weight:1,path:'list',url:'/content/',description:'List all ...',security:[]});
     res.menu.adminToolbar.addMenuItem({name:'View',weight:2,path:'show',url:'/content/show/' + content.id,description:'Show current ...',security:[]});
     res.menu.adminToolbar.addMenuItem({name:'Edit',weight:4,path:'edit',url:'/content/edit/' + content.id,description:'Edit content ...',security:[]});
     res.menu.adminToolbar.addMenuItem({name:'Delete',weight:5,path:'delete',url:'/content/delete/' + content.id,description:'Delete content ...',security:[]});
 
-    
+
     item = content.toObject();
 
   }
@@ -730,7 +727,7 @@ function listContent(req,res,template,block,next) {
       var Content = calipso.lib.mongoose.model('Content');
 
       res.menu.adminToolbar.addMenuItem({name:'Create',weight:1,path:'new',url:'/content/new',description:'Create content ...',security:[]});
-      
+
       var tag = req.moduleParams.tag ? req.moduleParams.tag : '';
       var format = req.moduleParams.format ? req.moduleParams.format : 'html';
       var sortBy = req.moduleParams.sortBy;
@@ -751,7 +748,7 @@ function listContent(req,res,template,block,next) {
       }
 
       if(tag) {
-        res.layout = tag + "Landing" // Enable landing page layout to be created for a tag;
+        res.layout = "tagLanding" // Enable landing page layout to be created for a tag view
         query.where('tags',tag);
       }
 
@@ -760,7 +757,7 @@ function listContent(req,res,template,block,next) {
       if(t1) {
         res.layout = t1 + "Landing" // Enable landing page layout to be created for a t1 level;
         taxonomy += t1;
-        if(t2) {          
+        if(t2) {
           taxonomy += "/" + t2;
           if(t3) {
             taxonomy += "/" + t3;
@@ -783,9 +780,9 @@ function listContent(req,res,template,block,next) {
 
 /**
  * Helper function for link to user
- */ 
-function contentLink(req,content) {      
-  return calipso.link.render({id:content._id,title:req.t('View {content}',{content:content.title}),label:content.title,url:'/content/show/' + content._id});  
+ */
+function contentLink(req,content) {
+  return calipso.link.render({id:content._id,title:req.t('View {content}',{content:content.title}),label:content.title,url:'/content/show/' + content._id});
 }
 
 /**
@@ -818,20 +815,20 @@ function getContentList(query,out,next) {
           pagerHtml = calipso.lib.pager.render(from,limit,total,out.req.url);
         }
 
-        var qry = Content.find(query).skip(from).limit(limit);  
-          
+        var qry = Content.find(query).skip(from).limit(limit);
+
         // Add sort
         qry = calipso.table.sortQuery(qry,out.sortBy);
-        
+
         qry.find(function (err, contents) {
 
                 if(out && out.res) {
 
                   // Render the item into the response
                   if(out.format === 'html') {
-                                                
+
                     var table = {id:'content-list',sort:true,cls:'table-admin',
-                        columns:[{name:'_id',sort:'title',label:'Title',fn:contentLink},                              
+                        columns:[{name:'_id',sort:'title',label:'Title',fn:contentLink},
                                 {name:'contentType',label:'Type'},
                                 {name:'status',label:'Status'},
                                 {name:'published',label:'Published'},
@@ -844,16 +841,16 @@ function getContentList(query,out,next) {
                           from:from,
                           limit:limit,
                           total:total,
-                          url:out.req.url,                        
+                          url:out.req.url,
                           sort:calipso.table.parseSort(out.sortBy)
                         }
                     };
-                    
+
                     var tableHtml = calipso.table.render(table,out.req);
-                    
-                    //calipso.theme.renderItem(out.req,out.res,out.template,out.block,{contents:contents, pager: pagerHtml},next);                    
+
+                    //calipso.theme.renderItem(out.req,out.res,out.template,out.block,{contents:contents, pager: pagerHtml},next);
                     calipso.theme.renderItem(out.req,out.res,tableHtml,out.block,null,next);
-                    
+
                   }
 
                   if(out.format === 'json') {
@@ -863,18 +860,18 @@ function getContentList(query,out,next) {
                     }));
                     //next();
                   }
-                  
+
                   // This really needs to be pluggable
                   // WIP!
                   if(out.format === 'rss') {
                     // Override the template
-                    out.res.layout = "rss";                    
+                    out.res.layout = "rss";
                     var newTemplate = calipso.modules["content"].templates["rss"];
-                    if(newTemplate) {                                          
+                    if(newTemplate) {
                       calipso.theme.renderItem(out.req,out.res,newTemplate,out.block,{contents:contents},next);
                     } else {
                       res.statusCode = 404;
-                      next();                     
+                      next();
                     }
                   }
 
@@ -899,18 +896,18 @@ function deleteContent(req,res,template,block,next) {
 
   var Content = calipso.lib.mongoose.model('Content');
   var id = req.moduleParams.id;
-  
+
   Content.findById(id, function(err, c) {
-      
+
     // Raise CONTENT_CREATE event
     calipso.e.pre_emit('CONTENT_DELETE',c);
-    
+
     Content.remove({_id:id}, function(err) {
       if(err) {
         req.flash('info',req.t('Unable to delete the content because {msg}',{msg:err.message}));
         res.redirect("/");
       } else {
-        calipso.e.post_emit('CONTENT_DELETE',c); 
+        calipso.e.post_emit('CONTENT_DELETE',c);
         req.flash('info',req.t('The content has now been deleted.'));
         res.redirect("/");
       }

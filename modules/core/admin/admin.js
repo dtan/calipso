@@ -19,7 +19,8 @@ function route(req, res, module, app, next) {
   res.menu.admin.addMenuItem({name:'Configuration Options',path:'admin/core/config',url:'/admin/core/config',description:'Core configuration ...',security:[]});
   res.menu.admin.addMenuItem({name:'View Languages',path:'admin/core/languages',url:'/admin/core/languages',description:'Languages ...',security:[]});
   res.menu.admin.addMenuItem({name:'View Cache',path:'admin/core/cache',url:'/admin/core/cache',description:'Cache ...',security:[]});
-  
+  res.menu.admin.addMenuItem({name:'Clear Cache',path:'admin/core/cache/clear',url:'/admin/core/cache/clear',description:'Clear Cache ...',security:[]});
+
   // Routing and Route Handler
   module.router.route(req, res, next);
 
@@ -34,16 +35,16 @@ function init(module, app, next) {
   calipso.lib.step(
 
   function defineRoutes() {
-  
+
     // Core Administration dashboard
     module.router.addRoute('GET /admin', showAdmin, {
       template: 'admin',
       block: 'admin.show',
       admin: true
     }, this.parallel());
-    
-    // Core configuration 
-    module.router.addRoute('GET /admin/core/config', coreConfig, {          
+
+    // Core configuration
+    module.router.addRoute('GET /admin/core/config', coreConfig, {
       block: 'admin.show',
       admin: true
     }, this.parallel());
@@ -57,42 +58,37 @@ function init(module, app, next) {
     module.router.addRoute('POST /admin/core/config/save', saveAdmin, {
       admin: true
     }, this.parallel());
-    
+
     module.router.addRoute('GET /admin/core/cache', showCache, {
       admin: true,
       template:'cache',
-      cache: false,
+      block:'admin.cache'
+    }, this.parallel());
+
+    module.router.addRoute('GET /admin/core/cache/clear', clearCache, {
+      admin: true,
+      template:'cache',
       block:'admin.cache'
     }, this.parallel());
 
     module.router.addRoute('GET /admin/core/languages', showLanguages, {
       admin: true,
       template:'languages',
-      block:'admin.languages'
+      block:'admin.languages',
     }, this.parallel());
-    
-    
+
+
     // Default installation router
     module.router.addRoute('GET /admin/install', install, null, this.parallel());
 
 
   }, function done() {
 
-    // Load the available themes into the calipso data object
-    // Used when rendering the edit form
-    calipso.data.themes = [];
-    calipso.lib.fs.readdir(app.path + '/themes', function(err, folders) {
+    // Shortcuts
+    calipso.data.loglevels = calipso.lib.winston.config.npm.levels;
+    calipso.data.modules = calipso.modules; // TODO - why do we need this?
+    next();
 
-      folders.forEach(function(name) {
-        if (name !='.DS_Store'){
-            calipso.data.themes.push(name);
-        }
-      });
-      calipso.data.loglevels = calipso.lib.winston.config.npm.levels;
-      calipso.data.modules = calipso.modules;
-
-      next();
-    });
 
   });
 
@@ -106,14 +102,14 @@ function init(module, app, next) {
  */
 function showLanguages(req, res, template, block, next) {
 
-  
-  
-  //res.menu.admin.secondary.push({ name: req.t('Configuration'),url: '/admin/core/config',regexp: /admin\/config/}); 
+
+
+  //res.menu.admin.secondary.push({ name: req.t('Configuration'),url: '/admin/core/config',regexp: /admin\/config/});
   //res.menu.admin.secondary.push({ name: req.t('Languages'),url: '/admin/core/languages',regexp: /admin\/admin/});
   //res.menu.admin.secondary.push({ name: req.t('Cache'),url: '/admin/core/cache',regexp: /admin\/cache/});
-  
-  
-  
+
+
+
   // Check to see if we should google translate?!
   // e.g. /admin/languages?translate=es
   if(req.moduleParams.translate) {
@@ -243,11 +239,11 @@ function install(req, res, template, block, next) {
  * TODO Refactor this to a proper form
  */
 function showAdmin(req, res, template, block, next) {
-  
-  //res.menu.admin.secondary.push({ name: req.t('Configuration'),url: '/admin/core/config',regexp: /admin\/config/}); 
+
+  //res.menu.admin.secondary.push({ name: req.t('Configuration'),url: '/admin/core/config',regexp: /admin\/config/});
   //res.menu.admin.secondary.push({ name: req.t('Languages'),url: '/admin/core/languages',regexp: /admin\/admin/});
   //res.menu.admin.secondary.push({ name: req.t('Cache'),url: '/admin/core/cache',regexp: /admin\/cache/});
-  
+
   calipso.theme.renderItem(req, res, template, block, {},next);
 
 }
@@ -258,21 +254,26 @@ function showAdmin(req, res, template, block, next) {
  */
 function coreConfig(req, res, template, block, next) {
 
-  
-  //res.menu.admin.secondary.push({ name: req.t('Configuration'),url: '/admin/core/config',regexp: /admin\/config/}); 
-  //res.menu.admin.secondary.push({ name: req.t('Languages'),url: '/admin/core/languages',regexp: /admin\/admin/});
-  //res.menu.admin.secondary.push({ name: req.t('Cache'),url: '/admin/core/cache',regexp: /admin\/cache/});
-  
-  
-  //set the languages array
+  // Temporary data for form
   calipso.data.loglevels = [];
-
-  //console.log(calipso.modules);
-
-
   for(var level in calipso.lib.winston.config.npm.levels){
     calipso.data.loglevels.push(level);
-  }  
+  }
+
+  calipso.data.themes = [];
+  calipso.data.adminThemes = []; // TODO
+  for(var themeName in calipso.themes){
+    var theme = calipso.themes[themeName];
+    if(theme.about.type === "full" || theme.about.type === "frontend") {
+      calipso.data.themes.push(themeName);
+    }
+    if(theme.about.type === "full" || theme.about.type === "admin") {
+      calipso.data.adminThemes.push(themeName);
+    }
+    if(!theme.about.type) {
+      console.error("Theme " + themeName + " not enabled due to missing type.");
+    }
+  }
 
 
   var AppConfig = calipso.lib.mongoose.model('AppConfig');
@@ -286,9 +287,12 @@ function coreConfig(req, res, template, block, next) {
 
     var values = {
       config: {
+        cache:item.meta.cache,
+        cacheTtl:item.meta.cacheTtl,
         watchFiles: item.meta.watchFiles,
         language: item.meta.language,
         theme: item.meta.theme,
+        adminTheme: item.meta.adminTheme,
         logslevel: item.meta.logs.level,
         logsconsoleenabled:  item.meta.logs.console.enabled,
         logsfileenabled: item.meta.logs.file.enabled,
@@ -325,15 +329,45 @@ function coreConfig(req, res, template, block, next) {
           ]
         },
         {
+          id:'form-section-performance',
+          label:'Performance',
+          fields:[
+            {
+              label:'Enable Cache',
+              name:'config[cache]',
+              type:'checkbox',
+              description:'Experimental - will probably break things!',
+              value: item.meta.cache,
+              labelFirst: false
+            },
+            {
+              label:'Default Cache TTL',
+              name:'config[cacheTtl]',
+              type:'textbox',
+              description:'Default age (in seconds) for cache items.',
+              value: item.meta.cacheTtl
+            }
+          ]
+        },
+        {
           id:'form-section-theme',
           label:'Theme',
           fields:[
             {
-              label:'Theme',
+              label:'Frontend Theme',
               name:'config[theme]',
               type:'select',
               value:item.meta.theme,
-              options: calipso.data.themes
+              options: calipso.data.themes,
+              description:'Theme used for all web pages excluding admin pages'
+            },
+            {
+              label:'Admin Theme',
+              name:'config[adminTheme]',
+              type:'select',
+              value:item.meta.adminTheme,
+              options: calipso.data.adminThemes,
+              description:'Administration theme [NOT YET IMPLEMENTED]'
             }
           ]
         },
@@ -394,10 +428,11 @@ function coreConfig(req, res, template, block, next) {
 
 
     // populate the Modules form fields
-    var adminModuleFields = adminForm.sections[3].fields;
-    var tempModuleFields = {core:[],community:[],site:[]};
+    // TODO - make this dynamic
+    var adminModuleFields = adminForm.sections[4].fields;
+    var tempModuleFields = {core:[],community:[],site:[],downloaded:[]};
     var readonlyModules = ["admin","user","content","contentTypes"]; // Modules that cant be disabled
-    
+
     // load up the tempModuleFields (according to module category)
     for(var moduleName in calipso.modules) {
       var cM = {};
@@ -411,13 +446,13 @@ function coreConfig(req, res, template, block, next) {
       }
 
       cM.description = module.about ? module.about.description : '<span class="error">' + moduleName + ' is missing its package.json file</span>';
-      
+
       //adminModuleFields[moduleFieldMap[module.type]].fields.push(cM);
       tempModuleFields[module.type].push(cM);
     }
-    
+
     // add only non-empty fieldsets for module categories
-    ['Core','Community','Site'].forEach(function(moduleType){
+    ['Core','Community','Site','Downloaded'].forEach(function(moduleType){
       var moduleTypeFields = tempModuleFields[moduleType.toLowerCase()];
       // "Site" modules fieldset will only show up if there are any to show.
       if(moduleTypeFields.length){
@@ -434,12 +469,13 @@ function coreConfig(req, res, template, block, next) {
     function moduleSort(a, b){
       return a.name < b.name ? -1 : 1;
     }
+
     for(var i=0;i<adminModuleFields.length;i++){
       if(adminModuleFields[i].fields.length){
         adminModuleFields[i].fields.sort(moduleSort);
       }
     }
-    
+
     //console.log(values.config);
     res.layout = 'admin';
 
@@ -483,7 +519,9 @@ function saveAdmin(req, res, template, block, next) {
         if (!err && c) {
 
           c.theme = form.config.theme;
+          c.adminTheme = form.config.adminTheme;
           c.cache = form.config.cache;
+          c.cacheTtl = form.config.cacheTtl;
           c.language = form.config.language;
           c.watchFiles = form.config.watchFiles;
           c.logs.level = form.config.logslevel;
@@ -530,9 +568,9 @@ function saveAdmin(req, res, template, block, next) {
  *Convert the modules into an array to enable rendering to the form
  */
 function moduleFormatToArray(res, modules) {
-  
+
   var arrayModules = [];
-  
+
   for (var module in calipso.modules) {
     var enabled = modules[module] === 'on';
     arrayModules.push({
@@ -550,14 +588,22 @@ function moduleFormatToArray(res, modules) {
  * Display the cache
  */
 function showCache(req,res,template,block,next) {
-  
-  
-  //res.menu.admin.secondary.push({ name: req.t('Configuration'),url: '/admin/core/config',regexp: /admin\/config/}); 
-  //res.menu.admin.secondary.push({ name: req.t('Languages'),url: '/admin/core/languages',regexp: /admin\/admin/});
-  //res.menu.admin.secondary.push({ name: req.t('Cache'),url: '/admin/core/cache',regexp: /admin\/cache/});
 
   calipso.theme.renderItem(req, res, template, block, {
-    cache: JSON.stringify(calipso.cache.cache)
+    cache: calipso.cache.cache
   },next);
 
+}
+
+
+/**
+ * Display the cache
+ */
+function clearCache(req,res,template,block,next) {
+
+  calipso.cache.clear(function() {
+    calipso.theme.renderItem(req, res, template, block, {
+      cache: calipso.cache.cache
+    },next);
+  });
 }
