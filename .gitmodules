@@ -1,6 +1,6 @@
-[submodule "themes/respondo/public/css/stacklayout"]
-	path = themes/respondo/public/css/stacklayout
+[submodule "themes/custom/respondo/public/css/stacklayout"]
+	path = themes/custom/respondo/public/css/stacklayout
 	url = https://github.com/camslice/StackLayout.git
-[submodule "themes/respondo/public/js/datetimepicker"]
-	path = themes/respondo/public/js/datetimepicker
+[submodule "themes/custom/respondo/public/js/datetimepicker"]
+	path = themes/custom/respondo/public/js/datetimepicker
 	url = https://github.com/trentrichardson/jQuery-Timepicker-Addon.git
